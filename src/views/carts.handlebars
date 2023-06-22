@@ -1,0 +1,39 @@
+<h2>Carrito de {{userName}}</h2>
+<div class="row row-cols-1 row-cols-md-2 g-3">
+    {{#if prods.length}}
+        {{#each prods}}
+            <div class="col-6 col-md-3">
+                <div class="card">
+                    <div class="card-imgs">
+                        {{#each thumbnails}}
+                        <img src="{{this}}" class="img-fluid w-100" alt="{{title}}" />
+                        {{/each}}
+                    </div>
+                    <div class="card-body">
+                        <h5 class="card-title">{{title}}</h5>
+                        <p class="card-text"><small>{{category}}</small></p>
+                        <p class="card-text">{{description}}</p>
+                    </div>
+                    <div class="card-footer">
+                        <p class="card-text"><strong>${{price}}  x{{quantity}}</strong></p>
+                        <p class="card-text"><strong>Subtotal: ${{subtotal}}</strong></p>
+                        <form action="/api/carts/{{../cartId}}/products/{{id}}" method="delete">
+                            <button type="submit" value="submit">Eliminar</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        {{/each}}
+            <div class="col-6 col-md-3">
+                <h3>Total: $ {{total}}</h3>
+                <form action="/api/carts/{{cartId}}/purchase" method="post">
+                    <button type="submit" value="submit">Finalizar compra</button>
+                </form>
+            </div>
+    {{else}}
+        <h2>No hay productos agrgados al carrito</h2>
+    {{/if}}
+</div>
+
+{{!-- script que sobre-escribe el onsubmit de los forms --}}
+<script src="productForms.js"></script>

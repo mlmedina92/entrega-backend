@@ -1,0 +1,107 @@
+{{#if isAdminRole}}
+<h2>Bienvenido administrador {{userName}}</h2>
+{{else}}
+<h2>Bienvenido {{userName}}</h2>
+{{/if}}
+
+{{!-- se carga dinamicamnete con los eventos del socket.io desde realTimeProducts.js --}}
+<div id="messages"></div>
+
+<div id="prods" class="row row-cols-1 row-cols-md-2 g-3">
+    {{#each prods}}
+    <div class="col-6 col-md-3">
+        <div class="card">
+            <div class="card-imgs">
+                {{#each thumbnails}}
+                <img src="{{this}}" class="img-fluid w-100" alt="{{title}}" />
+                {{/each}}
+            </div>
+                {{#if ../isAdminRole}}
+                    <form action="/api/products" method="put">
+                        <div class="card-body">
+                            <input type="hidden" name="id" value="{{id}}">
+                            <label for="title-{{code}}">Titulo:</label>
+                            <input type="text" id="title-{{code}}" name="title" value="{{title}}">
+                            <label for="code-{{code}}">Code:</label>
+                            <input type="text" id="code-{{code}}" name="code" value="{{code}}">
+                            <label for="category-{{code}}">Category:</label>
+                            <input type="text" id="category-{{code}}" name="category" value="{{category}}">
+                            <label for="description-{{code}}">Description:</label>
+                            <textarea type="text" id="description-{{code}}" name="description">{{description}}</textarea>
+                            <label for="status-{{code}}">Status:</label>
+                            <input type="text" id="status-{{code}}" name="status" value="{{#if status}}true{{else}}false{{/if}}">
+                            <label for="stock-{{code}}">Stock:</label>
+                            <input type="text" id="stock-{{code}}" name="stock" value="{{stock}}">
+                            <label for="thumbnails-{{code}}">Thumbnails:</label>
+                            <input type="text" id="thumbnails-{{code}}" name="thumbnails" value="{{thumbnails}}">
+                        </div>
+                        <div class="card-footer">
+                            <label for="price-{{code}}">Precio:</label>
+                            <input type="number" id="price-{{code}}" name="price" value="{{price}}">
+                            <button type="submit" value="Submit">Actualizar</button>
+                        </div>
+                    </form>
+                    <form action="/api/products" method="delete">
+                        <input type="hidden" name="id" value="{{id}}">
+                        <button type="submit" value="Submit">Eliminar</button>
+                    </form>
+                {{else}}
+                    <div class="card-body">
+                        <h5 class="card-title">{{title}}</h5>
+                        <p class="card-text"><small><strong>{{category}}</strong></small></p>
+                        <p class="card-text"><small>{{description}}</small></p>
+                    </div>
+                    <div class="card-footer">
+                        <p class="card-text"><strong>${{price}}</strong></p>
+                        <form action="/api/carts/{{../cartId}}/products/{{id}}" method="post">
+                            <label for="qty-{{code}}">Cantidad:</label>
+                            <input type="number" id="qty-{{code}}" name="quantity" value="1">
+                            <button type="submit" value="Submit">Agregar</button>
+                        </form>
+                    </div>
+                {{/if}}
+        </div>
+    </div>
+    {{else}}
+    <h2>No hay productos</h2>
+    {{/each}}
+    {{#if isAdminRole}}
+        <form action="/api/products" method="post">
+            <legend>Nuevo producto</legend>
+            <label for="title-new">Titulo:</label>
+            <input type="text" id="title-new" name="title">
+            <label for="title-new">Code:</label>
+            <input type="text" id="code-new" name="code">
+            <label for="category-new">Category:</label>
+            <input type="text" id="category-new" name="category">
+            <label for="description-new">Description:</label>
+            <textarea type="text" id="description-new" name="description"></textarea>
+            <label for="stock-{{code}}">Stock:</label>
+            <input type="text" id="stock-{{code}}" name="stock">
+            <label for="thumbnails-{{code}}">Thumbnails:</label>
+            <input type="text" id="thumbnails-{{code}}" name="thumbnails">
+            <div class="card-footer">
+                <label for="price-new">Precio:</label>
+                <input type="number" id="price-new" name="price">
+                <button type="submit" value="Submit">Agregar nuevo</button>
+            </div>
+        </form>
+        <form action="/api/mocks" method="post">
+            <legend>Generar mocks</legend>
+            <label for="amount">Cantidad:</label>
+            <input type="text" id="amount" name="amount" value="1">
+            <div class="card-footer">
+                <button type="submit" value="Submit">Generar</button>
+            </div>
+        </form>
+    {{/if}}
+</div>
+
+{{!-- script que sobre-escribe el onsubmit de los forms --}}
+<script src="productForms.js"></script>
+
+{{!-- script de soket.io para trabajar del lado del cliente --}}
+<script src="/socket.io/socket.io.js"></script>
+
+{{!-- script que observa los sockets --}}
+<script src="realTimeProducts.js"></script>

@@ -1,0 +1,125 @@
+paths:
+  /api/carts/{cid}:
+    get:
+      summary: Get a cart
+      tags: 
+        - Cart
+      parameters:
+      - name: cid
+        in: path
+        description: Cart identifier
+      responses:
+        "200":
+          description: Get cart
+          content:
+            application/json:
+              schemas: 
+                $ref: '#/components/schemas/Cart'
+              example:
+                _id: 64417eb301476898bf585dbf
+                products: [
+                  {
+                    productId: asd123,
+                    quantity: 333
+                  },
+                  {
+                    productId: qwe789,
+                    quantity: 333
+                  }
+                ]
+        "500":
+          description: Server error
+        "400":
+          description: Missing data
+  /api/carts/{cid}/producs/{pid}:
+    post:
+      summary: Add product to cart
+      tags: 
+        - Cart
+      parameters:
+      - name: cid
+        in: path
+        description: Cart identifier
+      - name: pid
+        in: path
+        description: Product identifier
+      - name: quantity
+        in: body
+        description: Quantity to add
+      responses:
+        "200":
+          description: Add product to cart
+          content:
+            application/json:
+              example:
+                success: true
+        "500":
+          description: Server error
+        "400":
+          description: Missing data
+    delete:
+      summary: Remove product from cart
+      tags: 
+        - Cart
+      parameters:
+      - name: cid
+        in: path
+        description: Cart identifier
+      - name: pid
+        in: path
+        description: Product identifier
+      responses:
+        "200":
+          description: Remove product from cart
+          content:
+            application/json:
+              example:
+                success: true
+                redirectTo: /cart
+        "500":
+          description: Server error
+        "400":
+          description: Missing data    
+  /api/carts/{cid}/purchase:
+    post:
+      summary: Purchase cart
+      tags: 
+        - Cart
+      parameters:
+      - name: cid
+        in: path
+        description: Cart identifier
+      responses:
+        "200":
+          description: Purchased cart
+          content:
+            application/json:
+              example:
+                success: true
+                redirectTo: /cart
+        "500":
+          description: Server error
+        "400":
+          description: Missing data
+
+components:
+  schemas:
+    Cart: 
+      type: object
+      properties:
+        _id:
+          type: string
+        products:
+          type: Array
+      example:
+        _id: 64417eb301476898bf585dbf
+        products: [
+          {
+            productId: asd123,
+            quantity: 333
+          },
+          {
+            productId: qwe789,
+            quantity: 333
+          }
+        ]

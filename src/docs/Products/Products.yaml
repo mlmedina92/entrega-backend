@@ -1,0 +1,231 @@
+paths:
+  /api/products:
+    get:
+      summary: Get all products
+      tags: 
+        - Products
+      responses:
+        "200":
+          description: All products
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/FullProduct'
+        "500":
+          description: Server error
+        "400":
+          description: Missing data
+    post: 
+      summary: Add one product
+      tags: 
+        - Products
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/BasicProduct'
+            example:
+              thumbnails:
+                - https://pierorestaurante.com/wp-content/uploads/2018/11/Pizza_margarita_receta_plato_opt-1.jpg
+                - https://pierorestaurante.com/wp-content/uploads/2018/11/Pizza_margarita_receta_plato_opt-1.jpg
+              title: Pizza Margarita
+              price: 800
+              code: 234BCD
+              stock: 333
+              isNew: false
+              category: pizzas
+              description: Una pizza básica y clásica de tomate, queso mozzarella y albahaca fresca.
+      responses:
+        "200":
+          description: Product added
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FullProduct'
+              example:
+                id: 63f948be491ba8de92f1b017
+                thumbnails:
+                  - https://pierorestaurante.com/wp-content/uploads/2018/11/Pizza_margarita_receta_plato_opt-1.jpg
+                  - https://pierorestaurante.com/wp-content/uploads/2018/11/Pizza_margarita_receta_plato_opt-1.jpg
+                title: Pizza Margarita
+                price: 800
+                code: 234BCD
+                stock: 333
+                isNew: false
+                category: pizzas
+                description: Una pizza básica y clásica de tomate, queso mozzarella y albahaca fresca.
+        "500":
+          description: Server error
+        "400":
+          description: Missing data
+    put: 
+      summary: Update one product
+      tags: 
+        - Products
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/FullProduct'
+            example:
+                id: "64037481b0bd7410a7749655"
+                thumbnails:
+                  - "https://cdn0.recetasgratis.net/es/posts/0/2/6/pizza_hawaiana_de_jamon_y_pina_50620_600.webp"
+                  - "img4.jpg"
+                title: "Pizza Pepperoni"
+                price: 900
+                code: "555"
+                stock: 2
+                isNew: false
+                category: "pizzas"
+                description: "Una pizza cubierta con rodajas de pepperoni, un tipo de salami picante, y queso mozzarella"
+      responses:
+        "200":
+          description: Product updated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FullProduct'
+              example:
+                id: "64037481b0bd7410a7749655"
+                thumbnails:
+                  - "https://cdn0.recetasgratis.net/es/posts/0/2/6/pizza_hawaiana_de_jamon_y_pina_50620_600.webp"
+                  - "img4.jpg"
+                title: "Pizza Pepperoni"
+                price: 900
+                code: "555"
+                stock: 2
+                isNew: false
+                category: "pizzas"
+                description: "Una pizza cubierta con rodajas de pepperoni, un tipo de salami picante, y queso mozzarella"
+        "500":
+          description: Server error
+        "400":
+          description: Missing data
+    delete:
+      summary: Remove one product
+      tags: 
+        - Products
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/BasicProduct'
+            example:
+              id: 63f948be491ba8de92f1b017
+      responses:
+        "200":
+          description: Product removed
+          content:
+            application/json:
+              example:
+                id: 63f948be491ba8de92f1b017
+        "500":
+          description: Server error
+        "400":
+          description: Missing data
+  /api/products/{pid}:
+    get:
+      summary: Get one product
+      tags: 
+        - Products
+      parameters:
+        - name: pid
+          in: path
+          description: Product identifier
+      responses:
+        "200":
+          description: One Product
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FullProduct'
+              example:
+                id: "64037481b0bd7410a7749655"
+                thumbnails:
+                  - "https://cdn0.recetasgratis.net/es/posts/0/2/6/pizza_hawaiana_de_jamon_y_pina_50620_600.webp"
+                  - "img4.jpg"
+                title: "Pizza Pepperoni"
+                price: 900
+                code: "555"
+                stock: 2
+                isNew: false
+                category: "pizzas"
+                description: "Una pizza cubierta con rodajas de pepperoni, un tipo de salami picante, y queso mozzarella"
+        "500":
+          description: Server error
+        "400":
+          description: Missing data
+
+components:
+  schemas:
+    BasicProduct:
+      type: object
+      properties:
+        thumbnails:
+          type: array
+          items:
+            type: string
+        title:
+          type: string
+        price:
+          type: integer
+        code:
+          type: string
+        stock:
+          type: integer
+        isNew:
+          type: boolean
+        category:
+          type: string
+        description:
+          type: string
+      example:
+        thumbnails:
+          - https://pierorestaurante.com/wp-content/uploads/2018/11/Pizza_margarita_receta_plato_opt-1.jpg
+          - https://pierorestaurante.com/wp-content/uploads/2018/11/Pizza_margarita_receta_plato_opt-1.jpg
+        title: Pizza Margarita
+        price: 800
+        code: 234BCD
+        stock: 333
+        isNew: false
+        category: pizzas
+        description: Una pizza básica y clásica de tomate, queso mozzarella y albahaca fresca.
+    FullProduct:
+      type: object
+      properties:
+        id:
+          type: string
+        thumbnails:
+          type: array
+          items:
+            type: string
+        title:
+          type: string
+        price:
+          type: integer
+        code:
+          type: string
+        stock:
+          type: integer
+        isNew:
+          type: boolean
+        category:
+          type: string
+        description:
+          type: string
+      example:
+        id: 63f948be491ba8de92f1b017
+        thumbnails:
+          - https://pierorestaurante.com/wp-content/uploads/2018/11/Pizza_margarita_receta_plato_opt-1.jpg
+          - https://pierorestaurante.com/wp-content/uploads/2018/11/Pizza_margarita_receta_plato_opt-1.jpg
+        title: Pizza Margarita
+        price: 800
+        code: 234BCD
+        stock: 333
+        isNew: false
+        category: pizzas
+        description: Una pizza básica y clásica de tomate, queso mozzarella y albahaca fresca.

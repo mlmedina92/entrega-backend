@@ -1,0 +1,72 @@
+[
+  {
+    "id": 0,
+    "title": "Pizza Margarita",
+    "description": "Una pizza básica y clásica de tomate, queso mozzarella y albahaca fresca.",
+    "code": "pizza-margarita",
+    "price": 1,
+    "status": true,
+    "stock": 8,
+    "category": "pizzas",
+    "thumbnails": [
+      "https://pierorestaurante.com/wp-content/uploads/2018/11/Pizza_margarita_receta_plato_opt-1.jpg",
+      "https://pierorestaurante.com/wp-content/uploads/2018/11/Pizza_margarita_receta_plato_opt-1.jpg"
+    ]
+  },
+  {
+    "id": 1,
+    "title": "Pizza Pepperoni",
+    "description": "Una pizza cubierta con rodajas de pepperoni, un tipo de salami picante, y queso mozzarella",
+    "code": "pizza-pepperoni",
+    "price": 125,
+    "status": true,
+    "stock": 15,
+    "category": "pizzas",
+    "thumbnails":  [
+      "https://cdn7.kiwilimon.com/recetaimagen/13534/640x426/6024.jpg.webp",
+      "https://cdn7.kiwilimon.com/recetaimagen/13534/640x426/6024.jpg.webp"
+     ]
+  },
+  {
+    "id": 2,
+    "title": "Pizza Hawaiiana",
+    "description": "Una pizza con trozos de piña y jamón, además de salsa de tomate y queso mozzarella.",
+    "code": "pizza-hawaiiana",
+    "price": 1,
+    "status": true,
+    "stock": 8,
+    "category": "pizzas",
+    "thumbnails": [
+      "https://cdn0.recetasgratis.net/es/posts/0/2/6/pizza_hawaiana_de_jamon_y_pina_50620_600.webp",
+      "https://cdn0.recetasgratis.net/es/posts/0/2/6/pizza_hawaiana_de_jamon_y_pina_50620_600.webp"
+    ]
+  },
+  {
+    "id": 3,
+    "title": "Empanada de carne",
+    "description": "Una empanada rellena de carne picada, cebolla, aceitunas y huevo duro. Es muy común en Argentina y otros países de América Latina.",
+    "code": "emapanada-carne",
+    "price": 1,
+    "status": true,
+    "stock": 8,
+    "category": "Empanadas",
+    "thumbnails": [
+      "https://sazondemama.com/wp-content/uploads/2023/01/Como-hacer-la-receta-originaria-de-empanadas-de-carne-argentinas-768x432.jpg",
+      "https://sazondemama.com/wp-content/uploads/2023/01/Como-hacer-la-receta-originaria-de-empanadas-de-carne-argentinas-768x432.jpg"
+    ]
+  },
+  {
+    "id": 4,
+    "title": "Empanada de pollo",
+    "description": "Una empanada rellena de pollo desmenuzado, cebolla, pimiento, aceitunas y especias. Es popular en muchos países de habla hispana",
+    "code": "Empanada-pollo",
+    "price": 1,
+    "status": true,
+    "stock": 8,
+    "category": "Empanadas",
+    "thumbnails": [
+      "https://sazondemama.com/wp-content/uploads/2023/01/Como-hacer-la-receta-originaria-de-empanadas-de-carne-argentinas-768x432.jpg",
+      "https://sazondemama.com/wp-content/uploads/2023/01/Como-hacer-la-receta-originaria-de-empanadas-de-carne-argentinas-768x432.jpg"
+    ]
+  }
+]

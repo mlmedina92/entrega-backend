@@ -1,0 +1,119 @@
+swagger: "2.0"
+paths:
+  /api/users/login:
+    post:
+      summary: Login user
+      tags:
+        - Users
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - in: body
+          name: user
+          description: User object
+          required: true
+          schema:
+            $ref: "#/definitions/LoginUserRequest"
+      responses:
+        200:
+          description: User logged in
+          schema:
+            $ref: "#/definitions/LoginUserResponse"
+        302:
+          description: Redirect to error login page
+        400:
+          description: Invalid request
+        500:
+          description: Internal server error
+
+  /api/users/registro:
+    post:
+      summary: Create a new user
+      tags:
+        - Users
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - in: body
+          name: user
+          description: User object
+          required: true
+          schema:
+            $ref: "#/definitions/CreateUserRequest"
+      responses:
+        200:
+          description: User created
+        302:
+          description: Redirect to error registration page
+        400:
+          description: Invalid request
+        500:
+          description: Internal server error
+
+definitions:
+  LoginUserRequest:
+    type: object
+    properties:
+      email:
+        type: string
+      password:
+        type: string
+    required:
+      - email
+      - password
+
+  LoginUserResponse:
+    type: object
+    properties:
+      message:
+        type: string
+      user:
+        $ref: "#/definitions/User"
+
+  CreateUserRequest:
+    type: object
+    properties:
+      first_name:
+        type: string
+      last_name:
+        type: string
+      email:
+        type: string
+      age:
+        type: number
+      password:
+        type: string
+    required:
+      - first_name
+      - last_name
+      - email
+      - age
+      - password
+
+  User:
+    type: object
+    properties:
+      first_name:
+        type: string
+      last_name:
+        type: string
+      email:
+        type: string
+      age:
+        type: number
+      password:
+        type: string
+      cart:
+        type: string
+      role:
+        type: string
+    required:
+      - first_name
+      - last_name
+      - email
+      - age
+      - password
