@@ -1,6 +1,7 @@
 // una clase que recibe un objeto y da un objeto 
 export default class FullUserDTO {
     constructor(user) {
+        this.uid = user._id
         this.email = user.email
         this.password = user.password
         this.first_name = user.first_name

@@ -3,6 +3,7 @@ import dotenv from 'dotenv'
 dotenv.config()
 
 export default {
+    myUrl: process.env.MY_URL || 'http://localhost:8080',
     mongo_uri: process.env.URI,
     persistence: process.env.PERSISTENCE || 'FILE',
     node_env:process.env.NODE_ENV,

@@ -57,6 +57,8 @@ export default class UsersManager {
       const isPassword = await comparePasswords(password, usuario.password); //da true o false
       if (isPassword) {
         //si existe
+        usuario.last_connection = new Date()
+        usuario.save()
         return usuario;
       }
     }
@@ -78,6 +80,22 @@ export default class UsersManager {
       return user;
     } catch (error) {
       throw error;
+    }
+  }
+
+  async changePassword(userId, password) {
+    try {
+      const user = await userModel.findById(userId);
+      if (!user) {
+        throw new Error("Usuario no encontrado");
+      }
+      
+      user.password = password;
+      await user.save();
+  
+      return user;
+    } catch (error) {
+      throw new Error("Error al cambiar la contraseña del usuario");
     }
   }
 
@@ -105,10 +123,12 @@ export default class UsersManager {
         throw new Error("Usuario no encontrado");
       }
   
-      user.documents = documents;
+      user.documents = user.documents.concat(documents);
+      console.log(user.documents);
+  
       await user.save();
     } catch (error) {
       throw error;
     }
-  }  
+  }   
 }

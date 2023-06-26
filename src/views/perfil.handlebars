@@ -1,3 +1,25 @@
-{{!-- <h2>perfil</h2> --}}
-{{!-- btn q te lleva a destruir la seccion q esta activa --}}
-{{!-- <button onclick="location.href='/users/logout'">Log out</button> --}}
+<form action="/api/users/{{uid}}/documents" method="POST" enctype="multipart/form-data">
+
+  <div class="form-group">
+    <label for="profileImage">Seleccionar Imagen de Perfil:</label>
+    <input type="file" class="form-control-file" id="profileImage" name="profileImage">
+  </div>
+  
+  <div class="form-group">
+    <label for="productImage">Seleccionar Imagen de Producto:</label>
+    <input type="file" class="form-control-file" id="productImage" name="productImage">
+  </div>
+
+  <div class="form-group">
+    <label for="document">Seleccionar Documento:</label>
+    <input type="file" class="form-control-file" id="document" name="document">
+    <select class="form-control" id="docType" name="docType">
+      <option value="credentials">Indentificación</option>
+      <option value="adressProof">Comprobante de domicilio</option>
+      <option value="accountStatus">Comprobante de estado de cuenta</option>
+    </select>
+  </div>
+  
+  <button type="submit" class="btn btn-primary">Subir archivo</button>
+
+</form>

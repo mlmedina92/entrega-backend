@@ -22,4 +22,12 @@ router.get('/reset/:token', (req, res) => {
     res.render('recuperar', { token: req.params.token })
 })
 
+router.get('/perfil', (req, res) => {
+    if (req.session && !req.session.email) {
+        res.redirect('/users/login')//redireccion a vista de login
+    } else {
+    res.render('perfil', { uid: req.session.uid })
+    }
+})
+
 export default router

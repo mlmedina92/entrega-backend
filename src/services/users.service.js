@@ -1,19 +1,19 @@
 import usersDao from "../persistence/DAOs/usersFactory.js";
 
 export const getUsers = async () => {
-  const users = await usersDao.getUsers()
-  return users
-}
+  const users = await usersDao.getUsers();
+  return users;
+};
 
 export const getInactiveUsers = async (days) => {
-  const users = await usersDao.getInactiveUsers(days)
-  return users
-}
+  const users = await usersDao.getInactiveUsers(days);
+  return users;
+};
 
 export const deleteUser = async (email) => {
-  const user = await usersDao.deleteUser(email)
-  return user
-}
+  const user = await usersDao.deleteUser(email);
+  return user;
+};
 
 export const login = async (objUser) => {
   const user = await usersDao.login(objUser);
@@ -34,6 +34,10 @@ export const checkUser = async (userId) => {
   const user = await usersDao.checkUser(userId);
   return user;
 };
+
+export const changePassword = async (userId, password) => {
+  return await usersDao.changePassword(userId, password);
+}
 
 export const changeUserRole = async (userId) => {
   const role = await usersDao.changeUserRole(userId);

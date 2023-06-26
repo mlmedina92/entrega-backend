@@ -22,15 +22,30 @@ export const getCart = async (req, res) => {
   res.status(200).json(resp);
 };
 
-const sendSuccessEmail = async (req, data) => {
-  await fetch(getBaseUrl(req) + `/api/messages/success`, {
-    method: "POST",
-    headers: {
-      "Access-Control-Allow-Methods": "*",
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify(data),
-  });
+const sendSuccessEmail = async (data) => {
+  try {
+    const username = data.username;
+    const tktId = data.tktId;
+    const total = data.total;
+
+    await transporter.sendMail({
+      from: "CODERHOUSE",
+      to: [data.username, "lm30540@gmail.com"],
+      subject: "Compra exitosa en Pizza!",
+      html: `<h1>Compra exitodo en Pizza</h1><p>Felicitaciones ${username} por su compra #${tktId}</p><p>Total $${total}</p>`,
+      attachments: [
+        {
+          path: __dirname + "/public/success.jpg",
+        },
+      ],
+    });
+  } catch (error) {
+    CustomError.createCustomError({
+      name: ErrorsName.SENDING_EMAIL,
+      cause: error.cause || error.stack,
+      message: error.message,
+    });
+  }
 };
 
 export const processPayment = async (req, res) => {
@@ -117,15 +132,11 @@ export const purchaseCart = async (req, res) => {
       const tktData = await tkt.json();
       resp = { success: true };
 
-      sendSuccessEmail(
-        // sin await, dado que no es necesario, puede terminar de mandar el email luego de responder el request
-        req,
-        {
-          username: req.session.email,
-          tktId: tktData.tktId,
-          total: total,
-        }
-      );
+      sendSuccessEmail({
+        username: req.session.email,
+        tktId: tktData.tktId,
+        total: total,
+      });
     } else {
       resp = { success: false };
     }

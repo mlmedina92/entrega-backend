@@ -1,6 +1,7 @@
-import { getUsers, login, create, checkUser, changeUserRole, uploadDocuments, deleteUser, getInactiveUsers, checkByEmail } from "../services/users.service.js";
+import { getUsers, login, create, checkUser, changeUserRole, uploadDocuments, deleteUser, getInactiveUsers, checkByEmail, changePassword } from "../services/users.service.js";
 import { transporter } from "../utils/nodemailer.js";
-import { generateToken, hashPassword } from "../utils.js";
+import { comparePasswords, generateToken, hashPassword } from "../utils.js";
+import jwt from 'jsonwebtoken'
 import config from "../config.js";
 
 export const getUsersController = async (req, res) => {
@@ -42,8 +43,9 @@ export const loginUser = async (req, res) => {
   const usersObj = req.body;
   const userLogged = await login(usersObj);
   if (userLogged) {
-    req.session.email = userLogged.user.email; //creo sesion
-    req.session.password = userLogged.user.password; //creo sesion
+    req.session.uid = userLogged.user.uid;
+    req.session.email = userLogged.user.email;
+    req.session.password = userLogged.user.password;
     req.session.userName = userLogged.user.full_name;
     req.session.cartId = userLogged.user.cartId;
     req.session.role = userLogged.user.role;
@@ -81,7 +83,7 @@ export const requestPasswordReset = async (req, res) => {
       from: "noreply@example.com",
       to: email,
       subject: "Restablecer contraseña",
-      html: `<p>Con <a href="http://localhost:8080/api/users/reset/${resetToken}">este</a> link podrás restablecer tu contraseña.</p>
+      html: `<p>Con <a href="${config.myUrl}/reset/${resetToken}">este</a> link podrás restablecer tu contraseña.</p>
         
       <img style="margin: 20px" height="200" src="https://www.enter.co/wp-content/uploads/2016/05/Contrase%C3%B1a-1024x768.jpg" >`,
     };
@@ -102,7 +104,8 @@ export const requestPasswordReset = async (req, res) => {
 };
 
 export const resetPassword = async (req, res) => {
-  const { token, password } = req.body;
+  const { token } = req.params
+  const { password } = req.body;
 
   try {
     // Verificar la validez del token y su fecha de expiración
@@ -121,8 +124,8 @@ export const resetPassword = async (req, res) => {
       }
     }
 
-    const userId = decodedToken.id;
-    await hashPassword(password);
+    const userId = decodedToken.user._id;
+    const hashed = await hashPassword(password);
 
     const user = await checkUser(userId);
     if (!user) {
@@ -138,7 +141,7 @@ export const resetPassword = async (req, res) => {
     }
 
     // Cambiar la contraseña del usuario utilizando la función del manager
-    await userManager.changePassword(userId, password);
+    await changePassword(userId, hashed);
     user.userToken = null
     user.save()
     res.json({ message: "Contraseña restablecida exitosamente" }).redirect('/');
@@ -185,8 +188,8 @@ export const changeRole = async (req, res) => {
       return res.status(404).json({ message: "Usuario no encontrado" });
     }
 
-    const requiredDocuments = ["Identificación", "Comprobante de domicilio", "Comprobante de estado de cuenta"];
-    const userDocuments = user.documents.map(document => document.filename);
+    const requiredDocuments = ["credentials", "adressProof", "accountStatus"];
+    const userDocuments = user.documents.map(document => document.reference);
 
     const hasAllRequiredDocuments = requiredDocuments.every(document => userDocuments.includes(document));
 
@@ -211,7 +214,8 @@ export const uploadDocumentsController = async (req, res) => {
   const documents = req.files.map(file => {
     return {
       filename: file.filename,
-      type: req.body.type,
+      name: file.filename,
+      reference: req.body.docType ? req.body.docType : file.fieldname,
     };
   });
 

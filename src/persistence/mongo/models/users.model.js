@@ -38,6 +38,10 @@ const userSchema = new mongoose.Schema({
     type: String,
     default: null,
   },
+  last_connection: {
+    type: Date,
+    default: null,
+  },
   documents: [
     {
       name: {

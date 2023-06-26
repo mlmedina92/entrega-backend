@@ -26,20 +26,19 @@ export const generateToken = (user) => {
   return token;
 };
 
-const getDestination = (req, file, cb) => {
-  const { type } = req.body;
-
-  if (type === 'profile') {
-    cb(null, 'uploads/profiles/');
-  } else if (type === 'product') {
-    cb(null, 'uploads/products/');
-  } else {
-    cb(null, 'uploads/documents/');
-  }
-};
-
 const storage = multer.diskStorage({
-  destination: getDestination,
+  destination: (req, file, cb) => {
+    let folder = '';
+    console.log(req.body);
+    if (file.fieldname === 'profileImage') {
+      folder = 'files/profiles/';
+    } else if (file.fieldname === 'productImage') {
+      folder = 'files/products/';
+    } else if (file.fieldname === 'document') {
+      folder = 'files/documents/';
+    }
+    cb(null, folder);
+  },
   filename: (req, file, cb) => {
     const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1e9);
     const extension = file.originalname.split('.').pop();

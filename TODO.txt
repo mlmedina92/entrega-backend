@@ -9,4 +9,6 @@
     ??? cómo usar errorMiddleware para retornar el error en el req ? o está bien que se dispare el error y rompa la ejecución? no sería más conveniente utilizar el try/catch para retornar el mensaje y detalle ?
 - logger winston clase 34
 - docker y cluster -> clase 35
+- doc swager clase 40
 - usuarios premium
+- documentación

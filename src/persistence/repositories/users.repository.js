@@ -53,6 +53,10 @@ export default class UsersRepository {
     return user;
   }
 
+  async changePassword(userId, password) {
+    return await this.dao.changePassword(userId, password);
+  }
+
   async changeUserRole(userId) {
     const updatedUser = await this.dao.changeUserRole(userId);
     return updatedUser;
