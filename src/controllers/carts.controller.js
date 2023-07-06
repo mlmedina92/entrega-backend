@@ -1,11 +1,12 @@
 import { addTo, deleteFrom, get } from "../services/carts.service.js";
+import { getById, update } from "../services/products.service.js";
 import CustomError from "../utils/errors/CustomError.js";
 import { ErrorsName } from "../utils/errors/errors.enum.js";
 import stripe from "../utils/stripe.js";
+import TktsManager from '../persistence/DAOs/tickets/TicketsMongo.js'
+import { transporter } from "../utils/nodemailer.js";
 
-const getBaseUrl = (req) => {
-  return req.protocol + "://" + req.get("host");
-};
+const tm = new TktsManager()
 
 export const addToCart = async (req, res) => {
   const resp = await addTo({ ...req.params, ...req.body });
@@ -33,11 +34,6 @@ const sendSuccessEmail = async (data) => {
       to: [data.username, "lm30540@gmail.com"],
       subject: "Compra exitosa en Pizza!",
       html: `<h1>Compra exitodo en Pizza</h1><p>Felicitaciones ${username} por su compra #${tktId}</p><p>Total $${total}</p>`,
-      attachments: [
-        {
-          path: __dirname + "/public/success.jpg",
-        },
-      ],
     });
   } catch (error) {
     CustomError.createCustomError({
@@ -69,43 +65,30 @@ export const processPayment = async (req, res) => {
 
 export const purchaseCart = async (req, res) => {
   try {
-    const cartApi = await fetch(
-      getBaseUrl(req) + `/api/carts/${req.session.cartId}`
-    ); // obtengo el carrito
-    const dataCart = await cartApi.json();
+    const dataCart = await get(req.params);
     let total = 0;
     let items = []; // items con stock suficiente
     let woStockItems = []; // items del carrito sin stock suficiente
     for (const item of dataCart.products) {
-      const prod = await fetch(
-        getBaseUrl(req) + `/api/products/${item.productId}`
-      ); // obtengo todos los datos de los prods del carrito
-      const prodData = await prod.json();
-      const subtotal = prodData.price * item.quantity;
-      if (prodData.stock >= item.quantity) {
+      const prod = await getById(item.productId); // obtengo todos los datos de los prods del carrito
+      const subtotal = prod.price * item.quantity;
+      if (prod.stock >= item.quantity) {
         // si hay stock suficiente
         // llamo a la api para actualizar stock
-        await fetch(getBaseUrl(req) + `/api/products/${item.productId}`, {
-          method: "PUT",
-          headers: {
-            "Access-Control-Allow-Methods": "*",
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            ...prodData,
-            stock: prodData.stock - item.quantity,
-          }),
+        await update({
+          ...prod,
+          stock: prod.stock - item.quantity,
         });
         total += subtotal;
         items.push({
-          ...prodData,
+          ...prod,
           quantity: item.quantity,
           subtotal: subtotal,
         });
-        await deleteFrom({ cid: req.session.cartId, pid: prodData.id }); // borra el prod comprado cart actual
+        await deleteFrom({ cid: dataCart._id, pid: prod.id }); // borra el prod comprado cart actual
       } else {
         woStockItems.push({
-          ...prodData,
+          ...prod,
           quantity: item.quantity,
           subtotal: subtotal,
         });
@@ -116,25 +99,16 @@ export const purchaseCart = async (req, res) => {
     if (items.length > 0) {
       // se puede finalizar compras
       // crear ticket
-      const tkt = await fetch(getBaseUrl(req) + `/api/tickets`, {
-        method: "POST",
-        headers: {
-          "Access-Control-Allow-Methods": "*",
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          code: Date.now() + Math.random(), // Unique random code
-          purchase_datetime: Date.now(),
-          amount: total,
-          purchaser: req.session.email,
-        }),
+      const tkt = await tm.create({
+        code: Date.now() + Math.random(), // Unique random code
+        purchase_datetime: Date.now(),
+        amount: total,
+        purchaser: req.session.email,
       });
-      const tktData = await tkt.json();
       resp = { success: true };
-
       sendSuccessEmail({
         username: req.session.email,
-        tktId: tktData.tktId,
+        tktId: tkt,
         total: total,
       });
     } else {

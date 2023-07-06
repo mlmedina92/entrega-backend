@@ -122,7 +122,7 @@ export default class ProductManager {
     found.description = description;
     found.code = code;
     found.price = Number(price);
-    found.status = (status.toLowerCase() === "true");
+    found.status = "true";
     found.stock = Number(stock);
     found.category = category;
     found.thumbnails = thumbnails;

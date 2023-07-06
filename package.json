@@ -6,7 +6,7 @@
   "main": "src/server.js",
   "scripts": {
     "test": "mocha --timeout 5000 --exit --recursive tests",
-    "start": "nodemon src/server.js"
+    "start": "node src/server.js"
   },
   "keywords": [],
   "author": "",

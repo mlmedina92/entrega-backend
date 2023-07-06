@@ -44,7 +44,7 @@ export default class UsersManager {
   }
 
   async delete(email) {
-    const user = await userModel.findByIdAndDelete(email)
+    const user = await userModel.findOneAndDelete({ email: email });
     return user
   }
 

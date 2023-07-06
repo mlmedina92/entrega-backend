@@ -11,7 +11,7 @@ export const getUsersController = async (req, res) => {
 
 export const deleteInactiveUsers = async (req, res) => {
   try {
-    const inactiveUsers = await getInactiveUsers(2); // Cambiar a 2 días para producción
+    const inactiveUsers = await getInactiveUsers(2);
     const deletedUsers = [];
 
     // Eliminar usuarios inactivos

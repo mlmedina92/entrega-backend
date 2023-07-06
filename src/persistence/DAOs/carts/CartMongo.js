@@ -20,7 +20,7 @@ export default class CartManager {
 
   async getCartById(id) {
     try {
-      const cart = await cartsModel.findById(id);
+      const cart = await cartsModel.findById(id).populate('products');
       return cart;
     } catch (error) {
       CustomError.createCustomError({
@@ -70,18 +70,18 @@ export default class CartManager {
 
   async deleteFromCart({ cid, pid }) {
     try {
-      const cart = await cartsModel.findById(cid);
-      if (!!cart) { // si el carrito esta creado
-        const prods = cart.products.filter(i => i.productId !== pid)
-        await cartsModel.findByIdAndUpdate(cid, { products: prods })
+      let cart = await cartsModel.findById(cid);
+      if (cart) {
+        cart.products = cart.products.filter(item => item.productId.toString() !== pid.toString());
+        await cart.save();
       }
-      return { success: true, redirectTo: '/cart' } // redirectTo cart para refrescar la página del carrito
+      return { success: true, redirectTo: '/cart' };
     } catch (error) {
       CustomError.createCustomError({
         name: ErrorsName.DELETING_CART,
         cause: error.cause || error.stack,
         message: error.message,
-      })
+      });
     }
-  }
+  }  
 }
